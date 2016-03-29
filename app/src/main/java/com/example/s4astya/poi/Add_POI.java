@@ -10,10 +10,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.*;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -51,6 +53,9 @@ public class Add_POI extends AppCompatActivity {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mMap = mapFragment.getMap();
+        LatLng odessa = new LatLng(46.28,30.44);
+        mMap.addMarker(new MarkerOptions().position(odessa));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(odessa));
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng point) {
@@ -82,7 +87,11 @@ public class Add_POI extends AppCompatActivity {
                 }
             }
         };
-
+        if(TextUtils.isEmpty(eName.getText().toString())) {
+            eName.setError("Should not be empty");
+            saveB.setEnabled(false);
+        }
+        else saveB.setEnabled(true);
         saveB.setOnClickListener(listener);
         cancelB.setOnClickListener(listener);
     }

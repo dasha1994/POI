@@ -45,7 +45,7 @@
         <activity
             android:name=".Edit_POI"
             android:label="@string/title_activity_edit__poi"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
