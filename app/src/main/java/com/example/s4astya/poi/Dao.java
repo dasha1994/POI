@@ -15,14 +15,15 @@ public class Dao {
 
     DBHelper dbHelper;
     SQLiteDatabase db;
-
-    Dao(Context context)
+    Context context;
+    Dao(Context cont)
     {
-        dbHelper = new DBHelper(context);
-        db = dbHelper.getWritableDatabase();
+       context = cont;
     }
     public boolean insert(String name,String description,String latitude,String longitude)
     {
+        open();
+        db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("name",name);
         cv.put("description",description);
@@ -39,7 +40,7 @@ public class Dao {
             else
                 result = false;
         }
-        dbHelper.close();
+        close();
         return result;
     }
     public void delete()
@@ -50,14 +51,50 @@ public class Dao {
     {
 
     }
-    public POI getPoiByName(String name)
+    public POI getPoiByName(String name2)
     {
-        return null;
+        open();
+        db = dbHelper.getReadableDatabase();
+        Cursor c = db.query("rtable",new String[]{"name","description","latitude","longitude"},"name=?",new String[]{name2},null,null,null);
+
+        POI poi = new POI();
+        if(c.moveToFirst()) {
+            int nameColIndex = c.getColumnIndex("name");
+            int desColIndex = c.getColumnIndex("description");
+            int latColIndex = c.getColumnIndex("latitude");
+            int longColIndex = c.getColumnIndex("longitude");
+            poi.setName(c.getString(nameColIndex));
+            poi.setDescription(c.getString(desColIndex));
+            poi.setLatitude(c.getString(latColIndex));
+            poi.setLongitude(c.getString(longColIndex));
+            c.close();
+        }
+        close();
+        return poi;
     }
     public ArrayList<String> getListNames()
     {
-        
-        return null;
+        open();
+        db = dbHelper.getReadableDatabase();
+        ArrayList<String> names = new ArrayList<>();
+        Cursor c = db.query("rtable", null, null, null, null, null, null);
+        if (c.moveToFirst()) {
+            int nameColIndex = c.getColumnIndex("name");
+            do {
+                names.add(c.getString(nameColIndex));
+            } while (c.moveToNext());
+        }
+        close();
+        return names;
+    }
+    private void open()
+    {
+        dbHelper = new DBHelper(context);
+        //db = dbHelper.getWritableDatabase();
+    }
+    private void close()
+    {
+        dbHelper.close();
     }
     class DBHelper extends SQLiteOpenHelper {
 
