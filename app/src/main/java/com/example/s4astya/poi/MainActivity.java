@@ -9,8 +9,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseBooleanArray;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,19 +30,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ListView pois;
-    Dao dao;
+    private ArrayList names;
+    ArrayAdapter<String> adapter;
+    private Dao dao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("POIs");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Button b = new Button(this);
-        b.setText("save");
-        toolbar.addView(b);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_input_add);
@@ -49,48 +55,103 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        dao = new Dao(this);
+        names=dao.getListNames();
 
         pois = (ListView)findViewById(R.id.listView);
-        dao = new Dao(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dao.getListNames());
+        pois.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,names);
         pois.setAdapter(adapter);
-        pois.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        pois.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                String itemTitle = (String) ((TextView) view).getText();
+                final String itemTitle = (String) ((TextView) view).getText();
                 builder.setTitle(itemTitle);
-                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+
+                builder.setNeutralButton("Open", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        Intent intent = new Intent(MainActivity.this, Edit_POI.class);
+                        intent.putExtra("poiName", itemTitle);
+                        startActivity(intent);
                     }
-                };
-                builder.setItems(dialogArray(itemTitle), onClickListener);
-                builder.setCancelable(false);
+                });
 
-                builder.setPositiveButton("close", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
-
                 AlertDialog resetDialog = builder.create();
                 resetDialog.show();
+                return true;
             }
         });
     }
-    public String[] dialogArray(String title)
-    {
-        POI p = dao.getPoiByName(title);
-        String[] array = new String[4];
-        array[0]="Название: "+p.getName();
-        array[1]="Автор: "+p.getDescription();
-        array[2]="Жанр: "+p.getLatitude();
-        array[3]="Страна: "+p.getLongitude();
 
-        return array;
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.delete:
+                SparseBooleanArray sbArray = pois.getCheckedItemPositions();
+                for (int i = 0; i < sbArray.size(); i++) {
+                    int key = sbArray.keyAt(i);
+                    if (sbArray.get(key)) {
+
+                        dao.delete(names.get(key).toString());
+                    }
+                }
+                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
+                pois.setAdapter(adapter);
+                break;
+            case R.id.deleteAll:
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final String itemTitle = "Do you want to delete all POIs?";
+                builder.setTitle(itemTitle);
+
+                builder.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i = 0; i < names.size(); i++)
+                        {
+                            dao.delete(names.get(i).toString());
+                        }
+                        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
+                        pois.setAdapter(adapter);
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog resetDialog = builder.create();
+                resetDialog.show();
+                break;
+            }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }
+
+

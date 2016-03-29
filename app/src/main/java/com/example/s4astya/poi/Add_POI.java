@@ -29,8 +29,8 @@ public class Add_POI extends AppCompatActivity {
 
     Button saveB;
     Button cancelB;
-    String sLatitude;
-    String sLongitude;
+    String sLatitude="";
+    String sLongitude="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

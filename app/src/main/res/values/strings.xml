@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_add__poi">Add_POI</string>
+    <string name="title_activity_edit__poi">Edit</string>
 </resources>

@@ -29,8 +29,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,12 +39,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Add_POI"
             android:label="@string/title_activity_add__poi"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Edit_POI"
+            android:label="@string/title_activity_edit__poi"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

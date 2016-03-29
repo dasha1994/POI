@@ -43,13 +43,24 @@ public class Dao {
         close();
         return result;
     }
-    public void delete()
+    public void delete(String name)
     {
-
+        open();
+        db = dbHelper.getWritableDatabase();
+        db.delete("rtable", "name =? ", new String[]{name});
+        close();
     }
-    public void update()
+    public void update(String pname,String newname,String description,String latitude,String longitude)
     {
-
+        open();
+        db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("name",newname);
+        cv.put("description",description);
+        cv.put("latitude",latitude);
+        cv.put("longitude",longitude);
+        db.update("rtable",cv,"name=?",new String[]{pname});
+        close();
     }
     public POI getPoiByName(String name2)
     {
@@ -90,7 +101,6 @@ public class Dao {
     private void open()
     {
         dbHelper = new DBHelper(context);
-        //db = dbHelper.getWritableDatabase();
     }
     private void close()
     {
