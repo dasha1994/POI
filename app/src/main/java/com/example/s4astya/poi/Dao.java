@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by S4ASTYA on 29.03.2016.
@@ -16,10 +17,12 @@ public class Dao {
     DBHelper dbHelper;
     SQLiteDatabase db;
     Context context;
+    
     Dao(Context cont)
     {
        context = cont;
     }
+
     public boolean insert(String name,String description,String latitude,String longitude)
     {
         open();
@@ -57,9 +60,9 @@ public class Dao {
         ContentValues cv = new ContentValues();
         cv.put("name",newname);
         cv.put("description",description);
-        cv.put("latitude",latitude);
+        cv.put("latitude", latitude);
         cv.put("longitude",longitude);
-        db.update("rtable",cv,"name=?",new String[]{pname});
+        db.update("rtable", cv, "name=?", new String[]{pname});
         close();
     }
     public POI getPoiByName(String name2)
@@ -83,6 +86,30 @@ public class Dao {
         close();
         return poi;
     }
+    public ArrayList<POI> getAllPOIs()
+    {
+        open();
+        db = dbHelper.getReadableDatabase();
+        ArrayList<POI> poi = new ArrayList<>();
+        Cursor c = db.query("rtable", null, null, null, null, null, null);
+        if (c.moveToFirst()) {
+            int nameColIndex = c.getColumnIndex("name");
+            int desColIndex = c.getColumnIndex("description");
+            int latColIndex = c.getColumnIndex("latitude");
+            int longColIndex = c.getColumnIndex("longitude");
+            do {
+                POI p = new POI();
+                p.setName(c.getString(nameColIndex));
+                p.setDescription(c.getString(desColIndex));
+                p.setLatitude(c.getString(latColIndex));
+                p.setLongitude(c.getString(longColIndex));
+                poi.add(p);
+            } while (c.moveToNext());
+        }
+        close();
+        return poi;
+    }
+
     public ArrayList<String> getListNames()
     {
         open();
@@ -106,6 +133,8 @@ public class Dao {
     {
         dbHelper.close();
     }
+
+
     class DBHelper extends SQLiteOpenHelper {
 
         public DBHelper(Context context) {
@@ -120,6 +149,11 @@ public class Dao {
                     + "description text,"
                     + "latitude text,"
                     + "longitude text"
+                    + ");");
+            db.execSQL("create table tphoto ("
+                    + "id integer primary key autoincrement,"
+                    + "path text,"
+                    + "namepoi text"
                     + ");");
 
         }

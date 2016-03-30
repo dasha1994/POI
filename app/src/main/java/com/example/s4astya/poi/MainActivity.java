@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView pois;
     private ArrayList names;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setTitle("POIs");
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,13 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-        dao = new Dao(this);
-        names=dao.getListNames();
 
-        pois = (ListView)findViewById(R.id.listView);
+        dao = new Dao(this);
+        names = dao.getListNames();
+
+        pois = (ListView) findViewById(R.id.listView);
         pois.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,names);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, names);
         pois.setAdapter(adapter);
         pois.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -94,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -105,6 +106,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case R.id.mapItem:
+                Intent intent = new Intent(MainActivity.this, Map.class);
+                startActivity(intent);
+                break;
             case R.id.delete:
                 SparseBooleanArray sbArray = pois.getCheckedItemPositions();
                 for (int i = 0; i < sbArray.size(); i++) {
@@ -125,8 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for (int i = 0; i < names.size(); i++)
-                        {
+                        for (int i = 0; i < names.size(); i++) {
                             dao.delete(names.get(i).toString());
                         }
                         adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 AlertDialog resetDialog = builder.create();
                 resetDialog.show();
                 break;
-            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
