@@ -21,26 +21,12 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editBtn"
-            android:text="Edit"
-            android:textColor="#ffffff"
-            android:background="@android:color/transparent"
-            />
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/esaveBtn"
             android:text="Save"
             android:textColor="#ffffff"
             android:background="@android:color/transparent"
             />
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/edeleteBtn"
-            android:text="Delete"
-            android:textColor="#ffffff"
-            android:background="@android:color/transparent" />
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

@@ -1,4 +1,4 @@
-package com.example.s4astya.poi;
+package com.example.s4astya.poi.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.s4astya.poi.model.POI;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by S4ASTYA on 29.03.2016.
@@ -17,62 +18,55 @@ public class Dao {
     DBHelper dbHelper;
     SQLiteDatabase db;
     Context context;
-    
-    Dao(Context cont)
-    {
-       context = cont;
+
+    public Dao(Context cont) {
+        context = cont;
     }
 
-    public boolean insert(String name,String description,String latitude,String longitude)
-    {
+    public void insert(String name, String description, String latitude, String longitude, ArrayList<String> path) {
         open();
         db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("name",name);
-        cv.put("description",description);
-        cv.put("latitude",latitude);
-        cv.put("longitude",longitude);
+        cv.put("name", name);
+        cv.put("description", description);
+        cv.put("latitude", latitude);
+        cv.put("longitude", longitude);
         db.insert("rtable", null, cv);
-        boolean result = false;
-        Cursor c = db.query("rtable", null, null, null, null, null, null);
-        if (c.moveToLast()) {
-            int idColIndex = c.getColumnIndex("name");
-            String name2 = c.getString(idColIndex);
-            if (name2.equals(name))
-                result = true;
-            else
-                result = false;
+        for (String p : path) {
+            ContentValues cvphoto = new ContentValues();
+            cvphoto.put("path", p);
+            cvphoto.put("namepoi", name);
+            db.insert("tphoto", null, cvphoto);
         }
         close();
-        return result;
     }
-    public void delete(String name)
-    {
+
+    public void delete(String name) {
         open();
         db = dbHelper.getWritableDatabase();
         db.delete("rtable", "name =? ", new String[]{name});
         close();
     }
-    public void update(String pname,String newname,String description,String latitude,String longitude)
-    {
+
+    public void update(String pname, String newname, String description, String latitude, String longitude) {
         open();
         db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("name",newname);
-        cv.put("description",description);
+        cv.put("name", newname);
+        cv.put("description", description);
         cv.put("latitude", latitude);
-        cv.put("longitude",longitude);
+        cv.put("longitude", longitude);
         db.update("rtable", cv, "name=?", new String[]{pname});
         close();
     }
-    public POI getPoiByName(String name2)
-    {
+
+    public POI getPoiByName(String name2) {
         open();
         db = dbHelper.getReadableDatabase();
-        Cursor c = db.query("rtable",new String[]{"name","description","latitude","longitude"},"name=?",new String[]{name2},null,null,null);
+        Cursor c = db.query("rtable", new String[]{"name", "description", "latitude", "longitude"}, "name=?", new String[]{name2}, null, null, null);
 
         POI poi = new POI();
-        if(c.moveToFirst()) {
+        if (c.moveToFirst()) {
             int nameColIndex = c.getColumnIndex("name");
             int desColIndex = c.getColumnIndex("description");
             int latColIndex = c.getColumnIndex("latitude");
@@ -83,11 +77,21 @@ public class Dao {
             poi.setLongitude(c.getString(longColIndex));
             c.close();
         }
+        Cursor c2 = db.query("tphoto", new String[]{"path"}, "namepoi=?", new String[]{name2}, null, null, null);
+        ArrayList<String> paths = new ArrayList<>();
+        if (c2.moveToFirst()) {
+            int pathColIndex = c2.getColumnIndex("path");
+            do {
+                paths.add(c2.getString(pathColIndex));
+            } while (c2.moveToNext());
+        }
+        c2.close();
+        poi.setPaths(paths);
         close();
         return poi;
     }
-    public ArrayList<POI> getAllPOIs()
-    {
+
+    public ArrayList<POI> getAllPOIs() {
         open();
         db = dbHelper.getReadableDatabase();
         ArrayList<POI> poi = new ArrayList<>();
@@ -110,8 +114,7 @@ public class Dao {
         return poi;
     }
 
-    public ArrayList<String> getListNames()
-    {
+    public ArrayList<String> getListNames() {
         open();
         db = dbHelper.getReadableDatabase();
         ArrayList<String> names = new ArrayList<>();
@@ -125,12 +128,12 @@ public class Dao {
         close();
         return names;
     }
-    private void open()
-    {
+
+    private void open() {
         dbHelper = new DBHelper(context);
     }
-    private void close()
-    {
+
+    private void close() {
         dbHelper.close();
     }
 
