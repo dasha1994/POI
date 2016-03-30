@@ -39,11 +39,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Add_POI"
+            android:name=".AddPOI"
             android:label="@string/title_activity_add__poi"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Edit_POI"
+            android:name=".EditPOI"
             android:label="@string/title_activity_edit__poi"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Map"></activity>

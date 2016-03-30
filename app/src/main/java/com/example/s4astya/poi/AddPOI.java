@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class Add_POI extends AppCompatActivity implements View.OnClickListener {
+public class AddPOI extends AppCompatActivity implements View.OnClickListener {
 
     private static int RESULT_LOAD_IMAGE = 1;
 
@@ -79,7 +79,7 @@ public class Add_POI extends AppCompatActivity implements View.OnClickListener {
                 switch (v.getId()) {
                     case R.id.saveBtn:
                         savePOI();
-                        Intent i = new Intent(Add_POI.this, MainActivity.class);
+                        Intent i = new Intent(AddPOI.this, MainActivity.class);
                         startActivity(i);
 
                     case R.id.cancelBtn:

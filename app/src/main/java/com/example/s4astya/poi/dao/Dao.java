@@ -31,7 +31,7 @@ public class Dao {
         cv.put("description", description);
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
-        db.insert("rtable", null, cv);
+        db.insert("tpoi", null, cv);
         for (String p : path) {
             ContentValues cvphoto = new ContentValues();
             cvphoto.put("path", p);
@@ -44,7 +44,7 @@ public class Dao {
     public void delete(String name) {
         open();
         db = dbHelper.getWritableDatabase();
-        db.delete("rtable", "name =? ", new String[]{name});
+        db.delete("tpoi", "name =? ", new String[]{name});
         close();
     }
 
@@ -56,14 +56,14 @@ public class Dao {
         cv.put("description", description);
         cv.put("latitude", latitude);
         cv.put("longitude", longitude);
-        db.update("rtable", cv, "name=?", new String[]{pname});
+        db.update("tpoi", cv, "name=?", new String[]{pname});
         close();
     }
 
     public POI getPoiByName(String name2) {
         open();
         db = dbHelper.getReadableDatabase();
-        Cursor c = db.query("rtable", new String[]{"name", "description", "latitude", "longitude"}, "name=?", new String[]{name2}, null, null, null);
+        Cursor c = db.query("tpoi", new String[]{"name", "description", "latitude", "longitude"}, "name=?", new String[]{name2}, null, null, null);
 
         POI poi = new POI();
         if (c.moveToFirst()) {
@@ -95,7 +95,7 @@ public class Dao {
         open();
         db = dbHelper.getReadableDatabase();
         ArrayList<POI> poi = new ArrayList<>();
-        Cursor c = db.query("rtable", null, null, null, null, null, null);
+        Cursor c = db.query("tpoi", null, null, null, null, null, null);
         if (c.moveToFirst()) {
             int nameColIndex = c.getColumnIndex("name");
             int desColIndex = c.getColumnIndex("description");
@@ -118,7 +118,7 @@ public class Dao {
         open();
         db = dbHelper.getReadableDatabase();
         ArrayList<String> names = new ArrayList<>();
-        Cursor c = db.query("rtable", null, null, null, null, null, null);
+        Cursor c = db.query("tpoi", null, null, null, null, null, null);
         if (c.moveToFirst()) {
             int nameColIndex = c.getColumnIndex("name");
             do {
@@ -146,7 +146,7 @@ public class Dao {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table rtable ("
+            db.execSQL("create table tpoi ("
                     + "id integer primary key autoincrement,"
                     + "name text,"
                     + "description text,"

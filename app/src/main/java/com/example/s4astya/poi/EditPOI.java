@@ -18,7 +18,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Edit_POI extends AppCompatActivity implements View.OnClickListener {
+public class EditPOI extends AppCompatActivity implements View.OnClickListener {
 
     private GoogleMap mMap;
     private LinearLayout ll;

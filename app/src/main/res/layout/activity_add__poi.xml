@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.s4astya.poi.Add_POI">
+    tools:context=".AddPOI">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

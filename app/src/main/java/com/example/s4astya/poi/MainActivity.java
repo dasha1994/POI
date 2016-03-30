@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Add_POI.class);
+                Intent intent = new Intent(MainActivity.this, AddPOI.class);
                 startActivity(intent);
             }
         });
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.setNeutralButton("Open", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, Edit_POI.class);
+                        Intent intent = new Intent(MainActivity.this, EditPOI.class);
                         intent.putExtra("poiName", itemTitle);
                         startActivity(intent);
                     }
