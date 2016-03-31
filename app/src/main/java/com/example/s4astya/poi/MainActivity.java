@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (sbArray.get(key)) {
 
                         dao.delete(names.get(key).toString());
+                        names.remove(key);
                     }
                 }
-                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
-                pois.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
                 break;
             case R.id.deleteAll:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -121,9 +121,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(DialogInterface dialog, int which) {
                         for (int i = 0; i < names.size(); i++) {
                             dao.delete(names.get(i).toString());
+                            names.remove(i);
                         }
-                        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
-                        pois.setAdapter(adapter);
+                 //       adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_multiple_choice, dao.getListNames());
+                       adapter.notifyDataSetChanged();
+                    //    pois.setAdapter(adapter);
                     }
                 });
 
